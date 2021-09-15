@@ -6,9 +6,9 @@
 
     public interface IProfileService
     {
-        Task<ProfileServiceModel> ByUser(string userId, bool allInformation = false);
+        Task<ProfileServiceModel> ByUserAsync(string userId, bool allInformation = false);
 
-        Task<Result> Update(
+        Task<Result> UpdateAsync(
             string userId,
             string email,
             string userName,
@@ -19,6 +19,6 @@
             Gender gender,
             bool isPrivate);
 
-        Task<bool> IsPublic(string userId);
+        Task<bool> IsPublicAsync(string userId);
     }
 }

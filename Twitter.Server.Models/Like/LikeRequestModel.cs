@@ -5,6 +5,6 @@
     public class LikeRequestModel
     {
         [Required]
-        public int Id { get; set; } 
+        public int PostId { get; set; }  
     }
 }

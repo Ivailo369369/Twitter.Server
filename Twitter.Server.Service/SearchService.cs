@@ -14,7 +14,7 @@
 
         public SearchService(TwitterDbContext dbContext) => this.dbContext = dbContext; 
 
-        public async Task<IEnumerable<ProfileSearchServiceModel>> Profiles(string query)
+        public async Task<IEnumerable<ProfileSearchServiceModel>> ProfilesAsync(string query)
             => await this.dbContext
                 .Users
                 .Where(u => u.UserName.ToLower().Contains(query.ToLower()) ||

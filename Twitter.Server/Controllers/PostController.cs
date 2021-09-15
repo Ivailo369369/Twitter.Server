@@ -70,6 +70,7 @@
             var userId = this.currentUser.GetId();
 
             var result = await this.post.DeleteAsync(id, userId); 
+
             if (result.Failure)
             {
                 return BadRequest();
@@ -84,7 +85,7 @@
         {
             var userId = this.currentUser.GetId();
 
-            var result = await this.post.RemoveComment(postId, commentId, userId);
+            var result = await this.post.RemoveCommentAync(postId, commentId, userId);
 
             if (result.Failure)
             {

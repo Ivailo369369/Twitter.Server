@@ -5,7 +5,7 @@
 
     public interface ICommentService
     {
-        Task<Result> CommentAsync(CommentRequestModel model, string userId);
+        Task<Result> CreateAsync(CommentRequestModel model, string userId); 
 
         Task<Result> RemoveAsync(int postId, int commentId, string userId);
 

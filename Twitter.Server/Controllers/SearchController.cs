@@ -17,6 +17,6 @@
         [AllowAnonymous]
         [Route(nameof(Profiles))]
         public async Task<IEnumerable<ProfileSearchServiceModel>> Profiles(string query)
-            => await this.search.Profiles(query);
+            => await this.search.ProfilesAsync(query);
     }
 }

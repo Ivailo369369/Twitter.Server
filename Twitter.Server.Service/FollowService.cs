@@ -13,7 +13,7 @@
 
         public FollowService(TwitterDbContext dbContext) => this.dbContext = dbContext;
 
-        public async Task<Result> Follow(string userId, string followerId)
+        public async Task<Result> FollowAsync(string userId, string followerId)
         {
             var userAlreadyFollowed = await this.dbContext
                 .Follows
@@ -42,7 +42,7 @@
             return true;
         }
 
-        public async Task<bool> IsFollower(string userId, string followerId)
+        public async Task<bool> IsFollowerAsync(string userId, string followerId)
             => await this.dbContext
                 .Follows
                 .AnyAsync(f => f.UserId == userId &&

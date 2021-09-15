@@ -26,21 +26,21 @@
 
         [HttpGet]
         public async Task<ProfileServiceModel> Mine()
-          => await this.profile.ByUser(this.currentUser.GetId(), allInformation: true);
+          => await this.profile.ByUserAsync(this.currentUser.GetId(), allInformation: true);
 
         [HttpGet]
         [Route(Id)]
         public async Task<ProfileServiceModel> Details(string id)
         {
             var includeAllInformation = await this.follows
-                .IsFollower(id, this.currentUser.GetId());
+                .IsFollowerAsync(id, this.currentUser.GetId());
 
             if (!includeAllInformation)
             {
-                includeAllInformation = await this.profile.IsPublic(id);
+                includeAllInformation = await this.profile.IsPublicAsync(id);
             }
 
-            return await this.profile.ByUser(id, includeAllInformation);
+            return await this.profile.ByUserAsync(id, includeAllInformation);
         }
 
         [HttpPut]
@@ -48,7 +48,7 @@
         {
             var userId = this.currentUser.GetId();
 
-            var result = await this.profile.Update(
+            var result = await this.profile.UpdateAsync(
                 userId,
                 model.Email,
                 model.UserName,

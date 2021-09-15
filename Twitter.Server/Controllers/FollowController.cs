@@ -22,7 +22,7 @@
         [HttpPost]
         public async Task<IActionResult> Follow(FollowRequestModel model) 
         {
-            var result = await this.follows.Follow(
+            var result = await this.follows.FollowAsync(
                 model.UserId,
                 this.currentUser.GetId());
 

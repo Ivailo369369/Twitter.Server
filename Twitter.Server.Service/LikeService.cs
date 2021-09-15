@@ -17,7 +17,7 @@
         {
             var postObj = await this.dbContext
                 .Posts
-                .FirstOrDefaultAsync(p => p.Id == model.Id);
+                .FirstOrDefaultAsync(p => p.Id == model.PostId);
 
             var likedPost = await this.dbContext
                 .Likes
@@ -48,7 +48,7 @@
         {
             var postObj = await this.dbContext
                 .Posts
-                .FirstOrDefaultAsync(p => p.Id == model.Id);
+                .FirstOrDefaultAsync(p => p.Id == model.PostId);
                 
             var likedPost = await this.dbContext
                 .Likes
@@ -74,11 +74,11 @@
         {
             var commentObj = await this.dbContext
                 .Comments
-                .FirstOrDefaultAsync(c => c.Id == model.Id);
+                .FirstOrDefaultAsync(c => c.Id == model.PostId);
 
             var likedComment = await this.dbContext
                 .Likes
-                .FirstOrDefaultAsync(l => l.CommentId == model.Id && l.UserId == userId);
+                .FirstOrDefaultAsync(l => l.CommentId == model.PostId && l.UserId == userId);
 
             if (likedComment != null)
             {
@@ -104,7 +104,7 @@
         {
             var commentObj = await this.dbContext
                 .Comments
-                .FirstOrDefaultAsync(c => c.Id == model.Id);
+                .FirstOrDefaultAsync(c => c.Id == model.PostId);
 
             var likedComment = await this.dbContext
                 .Likes

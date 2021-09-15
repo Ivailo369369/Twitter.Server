@@ -14,7 +14,7 @@
 
         public ProfileService(TwitterDbContext dbContext) => this.dbContext = dbContext;
 
-        public async Task<ProfileServiceModel> ByUser(string userId, bool allInformation = false)
+        public async Task<ProfileServiceModel> ByUserAsync(string userId, bool allInformation = false)
            => await this.dbContext
                .Users
                .Where(u => u.Id == userId)
@@ -36,7 +36,7 @@
                    })
                .FirstOrDefaultAsync();
 
-        public async Task<Result> Update(
+        public async Task<Result> UpdateAsync(
             string userId,
             string email,
             string userName,
@@ -88,7 +88,7 @@
             return true;
         }
 
-        public async Task<bool> IsPublic(string userId)
+        public async Task<bool> IsPublicAsync(string userId)
             => await this.dbContext
                 .Profiles
                 .Where(p => p.UserId == userId)

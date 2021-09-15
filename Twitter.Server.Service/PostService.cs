@@ -34,7 +34,7 @@
         public async Task<IEnumerable<PostListingServiceModel>> ByUserAsync(string userId, int postId)
               => await this.dbContext
             .Posts
-            .Where(c => c.UserId == userId)
+            .Where(p => p.UserId == userId && p.IsDeleted == false)
             .OrderByDescending(c => c.CreatedOn)
              .Select(c => new PostListingServiceModel
              {
@@ -45,10 +45,10 @@
              })
              .ToListAsync();
 
-        public async Task<PostDetailsServiceModel> DetailsAsync(int id, string userId)
+        public async Task<PostDetailsServiceModel> DetailsAsync(int postId, string userId)
             => await this.dbContext
                 .Posts
-                .Where(c => c.Id == id)
+                .Where(p => p.Id == postId && p.IsDeleted == false)
                 .Select(c => new PostDetailsServiceModel
                 {
                     Id = c.Id,
@@ -56,20 +56,23 @@
                     ImageUrl = c.ImageUrl,
                     Description = c.Description,
                     UserName = c.User.UserName,
-                    Comments = CommentDetails(id, userId), 
-                    CommentCountLikes = CountCommentLikes(id)
+                    Comments = CommentDetails(postId, userId), 
+                    CommentCountLikes = CountCommentLikes(postId)
                 })
                 .FirstOrDefaultAsync();
 
         public async Task<Result> UpdateAsync(UpdatePostRequestModel model, string userId)
         {
             var post = await this.GetByIdAndByUserId(model.PostId, userId);  
-            if (post == null)
+
+            if (post == null && post.IsDeleted == true)
             {
                 return "This user cannot edit this post.";
             }
 
-            post.Description = model.Description; 
+            post.Description = model.Description;
+
+            this.dbContext.Posts.Update(post);
 
             await this.dbContext.SaveChangesAsync();
 
@@ -79,12 +82,15 @@
         public async Task<Result> DeleteAsync(int postId, string userId)
         {
             var post = await this.GetByIdAndByUserId(postId, userId);
-            if (post == null)  
+
+            if (post == null && post.IsDeleted == true)  
             {
                 return "This user cannot delete this post.";
             }
+
+            post.IsDeleted = true; 
              
-            this.dbContext.Posts.Remove(post);
+            this.dbContext.Posts.Update(post);
 
             await this.dbContext.SaveChangesAsync();
 
@@ -97,11 +103,11 @@
               .Where(c => c.Id == id && c.UserId == userId)
               .FirstOrDefaultAsync();
 
-        public async Task<Result> RemoveComment(int postId, int commentId, string userId)
+        public async Task<Result> RemoveCommentAync(int postId, int commentId, string userId)
         {
             var comment = await this.dbContext
                 .Comments
-                .Where(c => c.Id == commentId && c.PostId == postId && c.UserId == userId)
+                .Where(c => c.PostId == postId && c.Id == commentId && c.UserId == userId && c.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if (comment == null)
@@ -144,11 +150,11 @@
             return count; 
         }
 
-        private CommentDetailsModel CommentDetails(int id, string userid) 
+        private CommentDetailsModel CommentDetails(int postId, string userid) 
         {
             var comment = this.dbContext
                 .Comments
-                .Where(c => c.PostId == id && c.UserId == userid)
+                .Where(c => c.PostId == postId && c.UserId == userid)
                 .FirstOrDefault();
 
             var model = new CommentDetailsModel() 

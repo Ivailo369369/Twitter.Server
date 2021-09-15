@@ -14,14 +14,14 @@
 
         public CommentService(TwitterDbContext dbContext) => this.dbContext = dbContext; 
 
-        public async Task<Result> CommentAsync(CommentRequestModel model, string userId)
+        public async Task<Result> CreateAsync(CommentRequestModel model, string userId)
         { 
             var postObj = await this.dbContext
                 .Posts
                 .Where(p => p.Id == model.PostId) 
                 .FirstOrDefaultAsync();
 
-            if (postObj == null)
+            if (postObj == null && postObj.IsDeleted == true)
             {
                 return "You can't comment this post because it doest exist!"; 
             }
@@ -46,7 +46,7 @@
         {
             var commentObj = await this.dbContext
                .Comments
-               .Where(c => c.PostId == postId && c.Id == commentId && c.UserId == userId)
+               .Where(c => c.PostId == postId && c.Id == commentId && c.UserId == userId && c.IsDeleted == false)
                .FirstOrDefaultAsync();
 
             var model = new CommentEditRequestModel()  
@@ -72,7 +72,7 @@
         {
             var comment = await this.dbContext
                 .Comments
-                .Where(c => c.PostId == postId && c.Id == commentId && c.UserId == userId)
+                .Where(c => c.PostId == postId && c.Id == commentId && c.UserId == userId && c.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if (comment == null)
@@ -80,7 +80,9 @@
                 return "You can't delete this comment";
             }
 
-            var result = comment.IsDeleted = true; 
+            comment.IsDeleted = true;
+
+            this.dbContext.Comments.Update(comment); 
 
             await this.dbContext.SaveChangesAsync();
 

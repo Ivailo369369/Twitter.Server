@@ -6,6 +6,6 @@
 
     public interface ISearchService
     {
-        Task<IEnumerable<ProfileSearchServiceModel>> Profiles(string query);
+        Task<IEnumerable<ProfileSearchServiceModel>> ProfilesAsync(string query);
     }
 }

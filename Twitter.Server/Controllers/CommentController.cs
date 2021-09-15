@@ -26,7 +26,7 @@
         {
             var userId = this.currentUser.GetId(); 
              
-            var result = await this.comment.CommentAsync(model, userId);
+            var result = await this.comment.CreateAsync(model, userId);
 
             if (result.Failure)
             {

@@ -16,6 +16,6 @@
 
         Task<PostDetailsServiceModel> DetailsAsync(int id, string userId);
 
-        Task<Result> RemoveComment(int postId, int commentId, string userId);
+        Task<Result> RemoveCommentAync(int postId, int commentId, string userId);
     }
 }
