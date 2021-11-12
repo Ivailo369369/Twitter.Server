@@ -1,6 +1,8 @@
 ﻿namespace Twitter.Server.Infrastructure.Service
 {
-    public interface ICurrentUserService
+    using Twitter.Server.Service.ServicesType;
+
+    public interface ICurrentUserService : IScopedService
     {
         string GetUserName();
 

@@ -1,5 +1,8 @@
 ﻿namespace Twitter.Server.Infrastructure.Extensions
 {
+    using System.Linq;
+    using System.Text;
+
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
@@ -7,13 +10,12 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
-    using System.Text;
+
     using Twitter.Server.Data;
     using Twitter.Server.Data.Models;
     using Twitter.Server.Infrastructure.Filters;
-    using Twitter.Server.Infrastructure.Service;
     using Twitter.Server.Service;
-    using Twitter.Server.Service.Contracts;
+    using Twitter.Server.Service.ServicesType;
 
     public static class ServiceCollectionExtensions
     {
@@ -76,16 +78,42 @@
             return services;
         }
 
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
-           => services
-               .AddTransient<ICurrentUserService, CurrentUserService>()
-               .AddTransient<IProfileService,ProfileService>()
-               .AddTransient<IPostService, PostService>()
-               .AddTransient<ISearchService, SearchService>()
-               .AddTransient<ILikeService, LikeService>()
-               .AddTransient<ICommentService, CommentService>()
-               .AddTransient<IFollowService, FollowService>()
-               .AddTransient<IIdentityService, IdentityService>();
+        public static IServiceCollection AddApplicationServices(
+            this IServiceCollection services)
+        {
+            var serviceInterfaceType = typeof(IService);
+            var singletonServiceInterfaceType = typeof(ISingletonService);
+            var scopedServiceInterfaceType = typeof(IScopedService);
+
+            var types = serviceInterfaceType
+                .Assembly
+                .GetExportedTypes()
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .Select(t => new
+                {
+                    Service = t.GetInterface($"I{t.Name}"),
+                    Implementation = t,
+                })
+                .Where(t => t.Service != null);
+
+            foreach (var type in types)
+            {
+                if (serviceInterfaceType.IsAssignableFrom(type.Service))
+                {
+                    services.AddTransient(type.Service, type.Implementation);
+                }
+                else if (scopedServiceInterfaceType.IsAssignableFrom(type.Service))
+                {
+                    services.AddScoped(type.Service, type.Implementation);
+                }
+                else if (singletonServiceInterfaceType.IsAssignableFrom(type.Service))
+                {
+                    services.AddSingleton(type.Service, type.Implementation);
+                }
+            }
+
+            return services;
+        }
 
         public static IServiceCollection AddSwagger(this IServiceCollection services)
            => services.AddSwaggerGen(c =>

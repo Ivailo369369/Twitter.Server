@@ -3,8 +3,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Twitter.Server.Models.Post;
+    using Twitter.Server.Service.ServicesType;
 
-    public interface IPostService
+    public interface IPostService : IService
     {
         Task<int> CreateAsync(CreatePostRequestModel model, string userId);
 

@@ -2,8 +2,9 @@
 {
     using System.Threading.Tasks;
     using Twitter.Server.Models.Comment;
+    using Twitter.Server.Service.ServicesType;
 
-    public interface ICommentService
+    public interface ICommentService : IService
     {
         Task<Result> CreateAsync(CommentRequestModel model, string userId); 
 

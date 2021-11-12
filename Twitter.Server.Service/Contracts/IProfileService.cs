@@ -3,8 +3,9 @@
     using System.Threading.Tasks;
     using Twitter.Server.Data.Models;
     using Twitter.Server.Models.Profile;
+    using Twitter.Server.Service.ServicesType;
 
-    public interface IProfileService
+    public interface IProfileService : IService
     {
         Task<ProfileServiceModel> ByUserAsync(string userId, bool allInformation = false);
 

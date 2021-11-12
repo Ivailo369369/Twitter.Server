@@ -3,8 +3,9 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Twitter.Server.Models.Identity;
+    using Twitter.Server.Service.ServicesType;
 
-    public interface IIdentityService
+    public interface IIdentityService : IService
     {
         string GenerateJwtToken(string userId, string userName, string secret);
 

@@ -2,8 +2,9 @@
 {
     using System.Threading.Tasks;
     using Twitter.Server.Models.Like;
+    using Twitter.Server.Service.ServicesType;
 
-    public interface ILikeService
+    public interface ILikeService : IService
     {
         Task<Result> LikePostAsync(LikeRequestModel model, string userId);
 
